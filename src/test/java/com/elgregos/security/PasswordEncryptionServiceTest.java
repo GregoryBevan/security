@@ -21,7 +21,7 @@ public class PasswordEncryptionServiceTest {
 
 	@Deployment
 	public static Archive<?> createDeploymentPackage() {
-		return new EarDeployment("security.ear", PasswordEncryptionServiceTest.class) {
+		return new EarDeployment("security.ear") {
 			{
 				ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class,
 						User.class, Group.class);

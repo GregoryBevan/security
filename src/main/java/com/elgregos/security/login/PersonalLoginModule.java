@@ -1,4 +1,4 @@
-package com.elgregos.security;
+package com.elgregos.security.login;
 
 import java.util.Map;
 
