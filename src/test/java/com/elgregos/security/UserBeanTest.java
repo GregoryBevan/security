@@ -18,10 +18,10 @@ import com.elgregos.security.entities.User;
 import com.elgregos.security.service.PasswordEncryptionService;
 import com.elgregos.security.service.UserBean;
 
-//@RunWith(Arquillian.class)
+@RunWith(Arquillian.class)
 public class UserBeanTest {
 
-//	@Deployment
+	@Deployment
 	public static JavaArchive createDeploymentPackage() {
 		return ShrinkWrap.create(JavaArchive.class, "my.jar").addPackages(true, UserBean.class.getPackage())
 				.addAsManifestResource("test-persistence.xml", "persistence.xml").addAsManifestResource("test-ds.xml")
@@ -34,7 +34,7 @@ public class UserBeanTest {
 	@Inject
 	private PasswordEncryptionService passwordEncryptionService;
 
-//	@Test
+	@Test
 	public void createUserTest() {
 		final User user = new User();
 		user.setEmail("gregory_bevan@hotmail.com");

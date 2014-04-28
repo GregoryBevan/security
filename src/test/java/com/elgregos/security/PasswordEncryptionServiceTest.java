@@ -2,12 +2,11 @@ package com.elgregos.security;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.ejb.EJB;
+import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,19 +14,22 @@ import org.junit.runner.RunWith;
 import com.elgregos.security.entities.Group;
 import com.elgregos.security.entities.User;
 import com.elgregos.security.service.PasswordEncryptionService;
+import com.elgregos.test.arquillian.EarDeployment;
 
 @RunWith(Arquillian.class)
 public class PasswordEncryptionServiceTest {
 
 	@Deployment
-	public static JavaArchive createDeploymentPackage() {
-		return ShrinkWrap
-				.create(JavaArchive.class, "test.jar")
-				.addClasses(PasswordEncryptionService.class, User.class,
-						Group.class, SecurityException.class);
+	public static Archive<?> createDeploymentPackage() {
+		return new EarDeployment("security.ear", PasswordEncryptionServiceTest.class) {
+			{
+				ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class,
+						User.class, Group.class);
+			}
+		}.create();
 	}
 
-	@EJB
+	@Inject
 	private PasswordEncryptionService passwordEncryptionService;
 
 	@Test
@@ -40,8 +42,7 @@ public class PasswordEncryptionServiceTest {
 		final User user = new User();
 		final String inputPassword = "MyPassword";
 		try {
-			this.passwordEncryptionService.setEncryptedPassword(user,
-					inputPassword);
+			this.passwordEncryptionService.setEncryptedPassword(user, inputPassword);
 			String password = user.getPassword();
 			assertNotNull(password);
 			Assert.assertEquals(128, password.length());

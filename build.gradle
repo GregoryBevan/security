@@ -2,7 +2,6 @@ apply plugin: 'eclipse'
 apply plugin: 'java'
 apply plugin: 'artifactory-publish'
 apply plugin: 'project-report'
-apply plugin: 'arquillian'
 
 
 task wrapper(type: Wrapper) {
@@ -37,7 +36,7 @@ artifactory {
 	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
 	publish {
 		repository {
-			repoKey = 'elgregos-local'
+			repoKey = 'elgregos-release-local'
 			username = "${artifactory_user}"
 			password = "${artifactory_password}"
 			ivy {
@@ -68,13 +67,15 @@ configurations {
 	wildflyEmbeddedTestRuntime {extendsFrom testRuntime }
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 dependencies {
 	compile 'javax:javaee-api:7.0'
 	compile 'org.projectlombok:lombok:1.12.6'
 	compile 'org.slf4j:slf4j-api:1.7.6'
-	testCompile 'junit:junit:4.11'
-	testCompile 'org.jboss.arquillian.junit:arquillian-junit-container:1.1.4.Final'
+	testCompile group:'elgregos', name:'test-framework', version:'1.0.0', changing: true
 	testRuntime 'org.wildfly:wildfly-arquillian-container-managed:8.0.0.Final'
 }
 
