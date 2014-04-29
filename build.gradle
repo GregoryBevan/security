@@ -11,14 +11,14 @@ task wrapper(type: Wrapper) {
 buildscript {
 	repositories {
 		maven {
-			url 'http://192.168.10.127:8081/artifactory/elgregos'
+			url 'http://elgregos.com/artifactory/elgregos'
 			credentials {
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"
 			}
 		}
 		ivy {
-			url 'http://192.168.10.127:8081/artifactory/elgregos'
+			url 'http://elgregos.com/artifactory/elgregos'
 			credentials {
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"
