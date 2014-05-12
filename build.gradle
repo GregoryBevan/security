@@ -3,7 +3,6 @@ apply plugin: 'java'
 apply plugin: 'artifactory-publish'
 apply plugin: 'project-report'
 
-
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
@@ -11,14 +10,14 @@ task wrapper(type: Wrapper) {
 buildscript {
 	repositories {
 		maven {
-			url 'http://192.168.10.127:8081/artifactory/elgregos'
+			url 'http://elgregos.com/artifactory/elgregos'
 			credentials {
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"
 			}
 		}
 		ivy {
-			url 'http://192.168.10.127:8081/artifactory/elgregos'
+			url 'http://elgregos.com/artifactory/elgregos'
 			credentials {
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"
@@ -27,8 +26,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.1.0'		
-        classpath 'org.jboss.arquillian.gradle:arquillian-gradle-plugin:0.1'
+		classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.3'	
 	}
 }
 
