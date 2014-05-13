@@ -3,7 +3,6 @@ apply plugin: 'java'
 apply plugin: 'artifactory-publish'
 apply plugin: 'project-report'
 
-
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
@@ -27,8 +26,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.1.0'		
-        classpath 'org.jboss.arquillian.gradle:arquillian-gradle-plugin:0.1'
+		classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.3'		
 	}
 }
 
@@ -59,7 +57,6 @@ artifactory {
 		}
 	}
 }
-
 
 sourceCompatibility = '8'
 
