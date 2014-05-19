@@ -58,6 +58,7 @@ artifactory {
 	}
 }
 
+
 sourceCompatibility = '8'
 
 configurations {
