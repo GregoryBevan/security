@@ -1,0 +1,6 @@
+/subsystem=security/security-domain=personal:add(cache-type="default")
+reload
+/subsystem=security/security-domain=personal/authentication=classic:add( \
+		login-modules=[{code="com.elgregos.security.authentication.PersonalLoginModule", \
+		                flag="required"}])
+reload

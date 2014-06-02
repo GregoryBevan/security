@@ -1,4 +1,4 @@
-package com.elgregos.security;
+package com.elgregos.security.authentication;
 
 import java.io.IOException;
 

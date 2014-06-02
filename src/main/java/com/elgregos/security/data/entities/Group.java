@@ -1,4 +1,4 @@
-package com.elgregos.security.entities;
+package com.elgregos.security.data.entities;
 
 /**
  * Description : Définit les groupes d'autorisation de l'application

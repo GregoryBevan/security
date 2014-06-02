@@ -1,4 +1,4 @@
-package com.elgregos.security;
+package com.elgregos.security.service;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -11,9 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.elgregos.security.entities.Group;
-import com.elgregos.security.entities.User;
-import com.elgregos.security.service.PasswordEncryptionService;
+import com.elgregos.security.data.entities.Group;
+import com.elgregos.security.data.entities.User;
 import com.elgregos.test.arquillian.EarDeployment;
 
 @RunWith(Arquillian.class)
@@ -23,8 +22,7 @@ public class PasswordEncryptionServiceTest {
 	public static Archive<?> createDeploymentPackage() {
 		return new EarDeployment("security.ear") {
 			{
-				ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class,
-						User.class, Group.class);
+				this.ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, User.class, Group.class);
 			}
 		}.create();
 	}
@@ -33,23 +31,23 @@ public class PasswordEncryptionServiceTest {
 	private PasswordEncryptionService passwordEncryptionService;
 
 	@Test
-	public void testGetNewEncryptor() {
+	public void testPasswordEncryptionServiceInjection() {
 		assertNotNull(this.passwordEncryptionService);
 	}
 
 	@Test
 	public void testSetEncryptedPassword() {
 		final User user = new User();
-		final String inputPassword = "MyPassword";
+		user.setPassword("MyPassword");
 		try {
-			this.passwordEncryptionService.setEncryptedPassword(user, inputPassword);
-			String password = user.getPassword();
+			this.passwordEncryptionService.setEncryptedPassword(user);
+			final String password = user.getPassword();
 			assertNotNull(password);
 			Assert.assertEquals(128, password.length());
-			String salt = user.getSalt();
+			final String salt = user.getSalt();
 			assertNotNull(salt);
 			Assert.assertEquals(12, salt.length());
-		} catch (SecurityException se) {
+		} catch (final SecurityException se) {
 			Assert.fail(se.getMessage());
 		}
 	}

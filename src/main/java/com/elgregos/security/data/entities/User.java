@@ -1,4 +1,4 @@
-package com.elgregos.security.entities;
+package com.elgregos.security.data.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,14 +27,14 @@ import lombok.ToString;
 
 /**
  * Description : Utilisateur authentifié
- * 
+ *
  * @author Grégo
  * @date 2 mai 2013
  */
 @Entity
 @Table(name = "USERS")
 @Cacheable(false)
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = { "password", "salt" })
 @ToString(exclude = { "password", "salt" })
 public class User implements Serializable {
 
@@ -85,7 +85,7 @@ public class User implements Serializable {
 		this.groups = new ArrayList<>();
 	}
 
-	public void addGroup(Group group) {
+	public void addGroup(final Group group) {
 		this.groups.add(group);
 	}
 }
