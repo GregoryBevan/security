@@ -12,7 +12,9 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -29,6 +31,9 @@ import com.elgregos.test.arquillian.wildfly.WildFlyCliInvoker;
 
 @RunWith(Arquillian.class)
 public class PersonalLoginModuleTest {
+
+	@ArquillianResource(LoginServlet.class)
+	private URL url;
 
 	private static final String REMOVE_SECURITY_SCRIPT = "remove-security.cli";
 
@@ -64,10 +69,11 @@ public class PersonalLoginModuleTest {
 	}
 
 	@Test
+	@RunAsClient
 	public void test() {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			final URI loginURI = new URIBuilder().setScheme("http").setHost("localhost").setPort(8080).setPath("/web/login")
-					.setParameter("username", "gregory").setParameter("password", "mypassword").build();
+			final URI loginURI = new URIBuilder(url.toURI()).setFragment("/login").setParameter("username", "gregory")
+			        .setParameter("password", "mypassword").build();
 			final HttpGet httpGet = new HttpGet(loginURI);
 			final CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 			Assert.assertEquals(200, httpResponse.getStatusLine().getStatusCode());
