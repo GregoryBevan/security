@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
 
 			final PersonalPrincipal principal = (PersonalPrincipal) request.getUserPrincipal();
 			response.getWriter().println("principal=" + request.getUserPrincipal().getClass().getSimpleName());
-			response.getWriter().println("username=" + sampleEJB.getPrincipalName());
+			response.getWriter().println("username=" + this.sampleEJB.getPrincipalName());
 
 		} catch (final ServletException e) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN);
