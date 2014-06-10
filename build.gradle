@@ -69,6 +69,7 @@ dependencies {
 	compile 'javax:javaee-api:7.0'
 	compile 'org.projectlombok:lombok:1.12.6'
 	compile 'org.slf4j:slf4j-api:1.7.6'
+	testCompile 'org.apache.httpcomponents:httpclient:4.3.4'
 	testCompile group:'elgregos', name:'jpa-core', version:'1.0.0', changing: true
 	testCompile group:'elgregos', name:'test-framework', version:'1.0.0', changing: true
 	testRuntime 'org.wildfly:wildfly-arquillian-container-embedded:8.0.0.Final'
