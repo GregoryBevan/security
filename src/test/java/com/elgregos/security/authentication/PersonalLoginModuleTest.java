@@ -1,8 +1,16 @@
 package com.elgregos.security.authentication;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -31,36 +39,51 @@ public class PersonalLoginModuleTest {
 	private static File removeSecurityScript;
 
 	public static void setUp() {
-		final URL configureSecurityScriptURL = PersonalLoginModuleTest.class.getClassLoader().getResource(CONFIGURE_SECURITY_SCRIPT);
-		configureSecurityScript = new File(configureSecurityScriptURL.getFile());
-		final URL removeSecurityScriptURL = PersonalLoginModuleTest.class.getClassLoader().getResource(REMOVE_SECURITY_SCRIPT);
-		removeSecurityScript = new File(removeSecurityScriptURL.getPath());
+		final URL configureSecurityScriptURL = PersonalLoginModuleTest.class.getClassLoader().getResource(
+				PersonalLoginModuleTest.CONFIGURE_SECURITY_SCRIPT);
+		PersonalLoginModuleTest.configureSecurityScript = new File(configureSecurityScriptURL.getFile());
+		final URL removeSecurityScriptURL = PersonalLoginModuleTest.class.getClassLoader()
+				.getResource(PersonalLoginModuleTest.REMOVE_SECURITY_SCRIPT);
+		PersonalLoginModuleTest.removeSecurityScript = new File(removeSecurityScriptURL.getPath());
 	}
 
 	@Deployment
 	public static Archive<?> createDeployment() {
-		setUp();
-		WildFlyCliInvoker.newInstance().processCliScript(configureSecurityScript);
+		PersonalLoginModuleTest.setUp();
+		WildFlyCliInvoker.newInstance().processCliScript(PersonalLoginModuleTest.configureSecurityScript);
 		return new EarDeployment("security.ear") {
 			{
-				this.webArchive.addClass(LoginServlet.class).addAsWebInfResource("jboss-web.xml");
-				this.ejbModule.addClasses(PasswordEncryptionService.class, SampleEJB.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-						.addAsManifestResource("jboss-ejb3.xml");
-				this.earLibraries.add(ShrinkWrap.create(JavaArchive.class).addClasses(PersonalPrincipal.class, PersonalLoginModule.class)
-						.addPackage(User.class.getPackage()).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
+				webArchive.addClass(LoginServlet.class).addAsWebInfResource("jboss-web.xml");
+				ejbModule.addClasses(PasswordEncryptionService.class, SampleEJB.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
+				        .addAsManifestResource("jboss-ejb3.xml");
+				earLibraries.add(ShrinkWrap.create(JavaArchive.class).addClasses(PersonalPrincipal.class, PersonalLoginModule.class)
+				        .addPackage(User.class.getPackage()).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
+				addGradleDependency("org.apache.httpcomponents:httpclient:4.3.4", true);
 			}
 		}.create();
 	}
 
 	@Test
 	public void test() {
-		Assert.fail();
+		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			final URI loginURI = new URIBuilder().setScheme("http").setHost("localhost").setPort(8080).setPath("/web/login")
+					.setParameter("username", "gregory").setParameter("password", "mypassword").build();
+			final HttpGet httpGet = new HttpGet(loginURI);
+			final CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+			Assert.assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+		}
+		// assertTrue(httpResponse.getEntity()getText().contains("principal=" +
+		// CustomPrincipal.class.getSimpleName()));
+		// assertTrue(response.getText().contains("username=username"));
+		// assertTrue(response.getText().contains("description=An user description!"));
+		catch (final IOException | URISyntaxException e) {
+			Assert.fail();
+		}
 	}
 
 	@AfterClass
 	public static void tearDown() {
-		WildFlyCliInvoker.newInstance().processCliScript(removeSecurityScript);
-
+		WildFlyCliInvoker.newInstance().processCliScript(PersonalLoginModuleTest.removeSecurityScript);
 	}
 
 }

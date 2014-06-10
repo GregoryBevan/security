@@ -17,14 +17,12 @@ public class LoginServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doGet(req, resp);
+		processRequest(req, resp);
 	}
 
 	@Override
 	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doPost(req, resp);
+		processRequest(req, resp);
 	}
 
 	private void processRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
@@ -38,7 +36,7 @@ public class LoginServlet extends HttpServlet {
 
 			final PersonalPrincipal principal = (PersonalPrincipal) request.getUserPrincipal();
 			response.getWriter().println("principal=" + request.getUserPrincipal().getClass().getSimpleName());
-			response.getWriter().println("username=" + this.sampleEJB.getPrincipalName());
+			response.getWriter().println("username=" + sampleEJB.getPrincipalName());
 
 		} catch (final ServletException e) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN);
