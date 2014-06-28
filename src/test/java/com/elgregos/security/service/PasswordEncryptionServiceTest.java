@@ -1,7 +1,5 @@
 package com.elgregos.security.service;
 
-import static org.junit.Assert.assertNotNull;
-
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -22,7 +20,7 @@ public class PasswordEncryptionServiceTest {
 	public static Archive<?> createDeploymentPackage() {
 		return new EarDeployment("security.ear") {
 			{
-				this.ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, User.class, Group.class);
+				ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, User.class, Group.class);
 			}
 		}.create();
 	}
@@ -32,7 +30,7 @@ public class PasswordEncryptionServiceTest {
 
 	@Test
 	public void testPasswordEncryptionServiceInjection() {
-		assertNotNull(this.passwordEncryptionService);
+		Assert.assertNotNull(passwordEncryptionService);
 	}
 
 	@Test
@@ -40,12 +38,12 @@ public class PasswordEncryptionServiceTest {
 		final User user = new User();
 		user.setPassword("MyPassword");
 		try {
-			this.passwordEncryptionService.setEncryptedPassword(user);
+			passwordEncryptionService.setEncryptedPassword(user);
 			final String password = user.getPassword();
-			assertNotNull(password);
+			Assert.assertNotNull(password);
 			Assert.assertEquals(128, password.length());
 			final String salt = user.getSalt();
-			assertNotNull(salt);
+			Assert.assertNotNull(salt);
 			Assert.assertEquals(12, salt.length());
 		} catch (final SecurityException se) {
 			Assert.fail(se.getMessage());

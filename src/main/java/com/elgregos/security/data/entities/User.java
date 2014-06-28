@@ -32,7 +32,7 @@ import lombok.ToString;
  * @date 2 mai 2013
  */
 @Entity
-@Table(name = "USERS")
+@Table(name = "USER")
 @Cacheable(false)
 @EqualsAndHashCode(exclude = { "password", "salt" })
 @ToString(exclude = { "password", "salt" })
@@ -49,7 +49,7 @@ public class User implements Serializable {
 	@Column(nullable = false, length = 128)
 	@Getter
 	@Setter
-	private String firstName;
+	private String firstname;
 
 	@Column(nullable = false, length = 128)
 	@Getter
@@ -79,13 +79,13 @@ public class User implements Serializable {
 	@Column(name = "groupname", nullable = false, length = 64)
 	@Getter
 	@Setter(AccessLevel.NONE)
-	private List<Group> groups;
+	private final List<Group> groups;
 
 	public User() {
-		this.groups = new ArrayList<>();
+		groups = new ArrayList<>();
 	}
 
 	public void addGroup(final Group group) {
-		this.groups.add(group);
+		groups.add(group);
 	}
 }

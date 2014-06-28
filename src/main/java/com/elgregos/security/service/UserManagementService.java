@@ -16,8 +16,7 @@ public class UserManagementService {
 	private PasswordEncryptionService passwordEncryptionService;
 
 	public void createUser(final User user) {
-		this.passwordEncryptionService.setEncryptedPassword(user);
-		this.userCrudService.create(user);
+		passwordEncryptionService.setEncryptedPassword(user);
+		userCrudService.create(user);
 	}
-
 }

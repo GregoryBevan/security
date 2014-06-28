@@ -27,16 +27,16 @@ public class LoginServlet extends HttpServlet {
 
 	private void processRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 		try {
-			final String username = request.getParameter("username");
+			final String email = request.getParameter("email");
 			final String password = request.getParameter("password");
 
-			if (username != null && password != null) {
-				request.login(username, password);
+			if (email != null && password != null) {
+				request.login(email, password);
 			}
 
 			final PersonalPrincipal principal = (PersonalPrincipal) request.getUserPrincipal();
 			response.getWriter().println("principal=" + request.getUserPrincipal().getClass().getSimpleName());
-			response.getWriter().println("username=" + this.sampleEJB.getPrincipalName());
+			response.getWriter().println("username=" + sampleEJB.getPrincipalName());
 
 		} catch (final ServletException e) {
 			response.sendError(HttpServletResponse.SC_FORBIDDEN);

@@ -30,12 +30,12 @@ public class UserCrudServiceTest {
 	public static Archive<?> createDeploymentPackage() {
 		return new EarDeployment("user.ear") {
 			{
-				this.webArchive.addAsWebInfResource("test-ds.xml");
-				this.ejbModule.addClasses(UserManagementService.class, UserCrudService.class, PasswordEncryptionService.class).addAsManifestResource(
+				webArchive.addAsWebInfResource("test-ds.xml");
+				ejbModule.addClasses(UserManagementService.class, UserCrudService.class, PasswordEncryptionService.class).addAsManifestResource(
 						EmptyAsset.INSTANCE, "beans.xml");
-				this.earLibraries.add(ShrinkWrap.create(JavaArchive.class, "user.jar").addPackage(User.class.getPackage())
+				earLibraries.add(ShrinkWrap.create(JavaArchive.class, "user.jar").addPackage(User.class.getPackage())
 						.addAsManifestResource("test-persistence.xml", "persistence.xml"));
-				this.earLibraries.add(ShrinkWrap.createFromZipFile(JavaArchive.class, getJarFile(UserCrudService.class)));
+				earLibraries.add(ShrinkWrap.createFromZipFile(JavaArchive.class, getJarFile(UserCrudService.class)));
 			}
 		}.create();
 	}
@@ -61,13 +61,13 @@ public class UserCrudServiceTest {
 	@Test
 	public void createUserTest() {
 		final User user = new User();
-		user.setEmail("gregory_bevan@hotmail.com");
-		user.setFirstName("Grégory");
-		user.setLastname("Bévan");
+		user.setEmail("fanny.duhem@gmail.com");
+		user.setFirstname("Fanny");
+		user.setLastname("Duhem");
 		user.setPassword("MyPassword");
 		user.setRegisteredOn(new Date());
 		user.addGroup(Group.ADMINISTRATOR);
-		this.userManagementService.createUser(user);
+		userManagementService.createUser(user);
 		Assert.assertNotNull(user.getSalt());
 		Assert.assertEquals(128, user.getPassword().length());
 	}

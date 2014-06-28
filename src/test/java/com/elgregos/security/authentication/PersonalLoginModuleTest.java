@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -24,7 +25,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.elgregos.security.data.crud.UserCrudService;
 import com.elgregos.security.data.entities.User;
+import com.elgregos.security.service.LoginVerifier;
 import com.elgregos.security.service.PasswordEncryptionService;
 import com.elgregos.test.arquillian.EarDeployment;
 import com.elgregos.test.arquillian.wildfly.WildFlyCliInvoker;
@@ -58,12 +61,14 @@ public class PersonalLoginModuleTest {
 		WildFlyCliInvoker.newInstance().processCliScript(PersonalLoginModuleTest.configureSecurityScript);
 		return new EarDeployment("security.ear") {
 			{
-				webArchive.addClass(LoginServlet.class).addAsWebInfResource("jboss-web.xml");
-				ejbModule.addClasses(PasswordEncryptionService.class, SampleEJB.class).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
-				        .addAsManifestResource("jboss-ejb3.xml");
+				webArchive.addClass(LoginServlet.class).addAsWebInfResource("jboss-web.xml").addAsWebInfResource("test-ds.xml");
+				ejbModule.addClasses(PasswordEncryptionService.class, SampleEJB.class, LoginVerifier.class, UserCrudService.class)
+				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addAsManifestResource("jboss-ejb3.xml");
 				earLibraries.add(ShrinkWrap.create(JavaArchive.class).addClasses(PersonalPrincipal.class, PersonalLoginModule.class)
-				        .addPackage(User.class.getPackage()).addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
+						.addPackage(User.class.getPackage()).addAsManifestResource("test-persistence.xml", "persistence.xml")
+				        .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
 				addGradleDependency("org.apache.httpcomponents:httpclient:4.3.4", true);
+				addGradleDependency("elgregos:jpa-core:1.0.0", false);
 			}
 		}.create();
 	}
@@ -72,11 +77,11 @@ public class PersonalLoginModuleTest {
 	@RunAsClient
 	public void test() {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			final URI loginURI = new URIBuilder(url.toURI()).setFragment("/login").setParameter("username", "gregory")
-			        .setParameter("password", "mypassword").build();
+			final URI loginURI = new URIBuilder(url.toURI()).setPath(url.getPath() + "login").setParameter("email", "gregory_bevan@hotmail.com")
+					.setParameter("password", "MyPassword").build();
 			final HttpGet httpGet = new HttpGet(loginURI);
 			final CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-			Assert.assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+			Assert.assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
 		}
 		// assertTrue(httpResponse.getEntity()getText().contains("principal=" +
 		// CustomPrincipal.class.getSimpleName()));

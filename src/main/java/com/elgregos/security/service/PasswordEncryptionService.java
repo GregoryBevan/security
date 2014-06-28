@@ -1,6 +1,5 @@
 package com.elgregos.security.service;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -39,6 +38,18 @@ public class PasswordEncryptionService {
 	}
 
 	/**
+	 * Retourne le mot de passe crypté
+	 *
+	 * @param password Mot de passe
+	 * @param salt Donnée aléatoire
+	 * @return Mot de passe crypté
+	 */
+	public String getEncryptedPassword(final String password, final String salt) {
+		final byte[] saltAsByte = base64ToByte(salt);
+		return byteToBase64(getEncryptedPassword(password, saltAsByte));
+	}
+
+	/**
 	 * Retourne le tableau d'octet du mot de passe crypté
 	 *
 	 * @param password Mot de passe
@@ -46,7 +57,7 @@ public class PasswordEncryptionService {
 	 * @return Hachage du mot de passe entré
 	 * @throws SecurityException
 	 */
-	public byte[] getEncryptedPassword(final String password, final byte[] salt) throws SecurityException {
+	private byte[] getEncryptedPassword(final String password, final byte[] salt) throws SecurityException {
 		try {
 			final String algorithm = "PBKDF2WithHmacSHA1";
 			final KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 20000, 762);
@@ -80,9 +91,8 @@ public class PasswordEncryptionService {
 	 *
 	 * @param base64String Représentation base 64
 	 * @return byte[]
-	 * @throws IOException
 	 */
-	private byte[] base64ToByte(final String base64String) throws IOException {
+	private byte[] base64ToByte(final String base64String) {
 		final Decoder decoder = Base64.getDecoder();
 		return decoder.decode(base64String);
 	}
@@ -92,7 +102,6 @@ public class PasswordEncryptionService {
 	 *
 	 * @param byteArray Tableau d'octet à encoder en base 64
 	 * @return Représentation base 64
-	 * @throws IOException
 	 */
 	private String byteToBase64(final byte[] byteArray) {
 		final Encoder endecoder = Base64.getEncoder();
