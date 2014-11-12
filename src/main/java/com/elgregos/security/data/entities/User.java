@@ -26,9 +26,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Description : Utilisateur authentifié
+ * Description : Utilisateur authentifiÃ©
  *
- * @author Grégo
+ * @author GrÃ©go
  * @date 2 mai 2013
  */
 @Entity
@@ -72,20 +72,31 @@ public class User implements Serializable {
 	@Setter
 	private Date registeredOn;
 
-	@ElementCollection(targetClass = Group.class)
-	@CollectionTable(name = "USER_GROUPS", joinColumns = @JoinColumn(name = "email", nullable = false), uniqueConstraints = @UniqueConstraint(columnNames = {
-			"email", "groupname" }))
+	// @OneToMany(targetEntity = Group.class, mappedBy = "id", fetch =
+	// FetchType.EAGER)
+	// @Getter
+	// @Setter(AccessLevel.NONE)
+	// private final List<Group> groups;
+
+	@ElementCollection(targetClass = Role.class)
+	@CollectionTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "email", nullable = false), uniqueConstraints = @UniqueConstraint(columnNames = {
+			"email", "role" }))
 	@Enumerated(EnumType.STRING)
-	@Column(name = "groupname", nullable = false, length = 64)
+	@Column(name = "role", nullable = false, length = 64)
 	@Getter
 	@Setter(AccessLevel.NONE)
-	private final List<Group> groups;
+	private final List<Role> roles;
 
 	public User() {
-		groups = new ArrayList<>();
+		// this.groups = new ArrayList<>();
+		this.roles = new ArrayList<>();
 	}
 
-	public void addGroup(final Group group) {
-		groups.add(group);
+	// public void addGroup(final Group group) {
+	// // this.groups.add(group);
+	// }
+
+	public void addRole(final Role role) {
+		this.roles.add(role);
 	}
 }

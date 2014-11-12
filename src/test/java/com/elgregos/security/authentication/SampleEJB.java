@@ -6,12 +6,12 @@ import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 
 @Stateless
+@RolesAllowed("USER")
 public class SampleEJB {
 
 	@Resource
 	private EJBContext ejbContext;
 
-	@RolesAllowed("user")
 	public String getPrincipalName() {
 		return this.ejbContext.getCallerPrincipal().getName();
 	}

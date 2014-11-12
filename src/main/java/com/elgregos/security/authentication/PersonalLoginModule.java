@@ -1,7 +1,10 @@
 package com.elgregos.security.authentication;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.security.acl.Group;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -16,6 +19,7 @@ import javax.security.auth.spi.LoginModule;
 
 import lombok.extern.slf4j.Slf4j;
 
+import com.elgregos.security.data.entities.Role;
 import com.elgregos.security.service.LoginVerifier;
 
 @Slf4j
@@ -25,7 +29,7 @@ public class PersonalLoginModule implements LoginModule {
 	private CallbackHandler callbackHandler;
 	private Map<String, ?> sharedState;
 	private Map<String, ?> options;
-	private PersonalPrincipal personalPrincipal;
+	private UserPrincipal userPrincipal;
 
 	private LoginVerifier loginVerifier;
 
@@ -33,15 +37,15 @@ public class PersonalLoginModule implements LoginModule {
 
 	@Override
 	public void initialize(final Subject subject, final CallbackHandler callbackHandler, final Map<String, ?> sharedState,
-	        final Map<String, ?> options) {
-		System.out.println("init login module");
+			final Map<String, ?> options) {
+		log.info("init login module");
 		this.subject = subject;
 		this.callbackHandler = callbackHandler;
 		this.sharedState = sharedState;
 		this.options = options;
 
 		try {
-			loginVerifier = (LoginVerifier) new InitialContext().lookup("java:global/security/service/LoginVerifier");
+			this.loginVerifier = (LoginVerifier) new InitialContext().lookup("java:global/security/service/LoginVerifier");
 		} catch (final NamingException e) {
 			throw new IllegalStateException("Can't lookup LoginVerifier service");
 		}
@@ -50,7 +54,7 @@ public class PersonalLoginModule implements LoginModule {
 	@Override
 	public boolean login() throws LoginException {
 		System.out.println("login");
-		if (callbackHandler == null) {
+		if (this.callbackHandler == null) {
 			throw new LoginException("CallbackHandler can't be null");
 		}
 		final Callback[] callbacks = new Callback[2];
@@ -58,7 +62,7 @@ public class PersonalLoginModule implements LoginModule {
 		callbacks[1] = new PasswordCallback("password:", false);
 
 		try {
-			callbackHandler.handle(callbacks);
+			this.callbackHandler.handle(callbacks);
 		} catch (IOException | UnsupportedCallbackException e) {
 			throw new LoginException("CallbackHandler error");
 		}
@@ -68,21 +72,45 @@ public class PersonalLoginModule implements LoginModule {
 		final String password = String.valueOf(passwordCallback.getPassword());
 		passwordCallback.clearPassword();
 
-		succeeded = loginVerifier.checkLogin(email, password);
+		this.succeeded = this.loginVerifier.checkLogin(email, password);
 
-		return succeeded;
+		if (this.succeeded) {
+			createIdentity(email);
+		}
+
+		return this.succeeded;
 	}
 
 	private void createIdentity(final String username) {
-		if (personalPrincipal == null) {
-			personalPrincipal = new PersonalPrincipal(username);
+		if (this.userPrincipal == null) {
+			this.userPrincipal = new UserPrincipal(username);
 		}
 	}
 
 	@Override
 	public boolean commit() throws LoginException {
 		System.out.println("commit");
-		return false;
+		final Set<Principal> principals = this.subject.getPrincipals();
+		if (!principals.contains(this.userPrincipal)) {
+			principals.add(this.userPrincipal);
+		}
+
+		final Role[] roleList = getRoles(this.userPrincipal);
+
+		// principals.add(new RolePrincipal(Role.USER));
+
+		final Group roles = new PersonalGroup("Roles");
+		for (final Role role : roleList) {
+			final Group group = new PersonalGroup(role.toString());
+			group.addMember(this.userPrincipal);
+			roles.addMember(group);
+		}
+		principals.add(roles);
+		// roles.add(Role.USER);
+		// for (final Role role : roles) {
+		// principals.add(new RolePrincipal(role));
+		// }
+		return true;
 	}
 
 	@Override
@@ -97,4 +125,7 @@ public class PersonalLoginModule implements LoginModule {
 		return false;
 	}
 
+	private Role[] getRoles(final UserPrincipal principal) {
+		return this.loginVerifier.getUserRoles(principal.getName());
+	}
 }

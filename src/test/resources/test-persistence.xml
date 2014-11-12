@@ -4,7 +4,7 @@
 	xsi:schemaLocation="
 http://java.sun.com/xml/ns/persistence
 http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-	<persistence-unit name="test">
+	<persistence-unit name="security">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>java:jboss/datasources/arquillian</jta-data-source>
 		<class>com.elgregos.security.entities.User</class>
