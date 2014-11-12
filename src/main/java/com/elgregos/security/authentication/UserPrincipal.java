@@ -10,13 +10,13 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode(doNotUseGetters = true, of = { "name" })
 @ToString(doNotUseGetters = true, of = { "name" })
-public class PersonalPrincipal implements Principal, Serializable {
+public class UserPrincipal implements Principal, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private final String name;
 
-	public PersonalPrincipal(final String name) {
+	public UserPrincipal(final String name) {
 		this.name = name;
 	}
 }

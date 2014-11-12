@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
 				request.login(email, password);
 			}
 
-			final PersonalPrincipal principal = (PersonalPrincipal) request.getUserPrincipal();
+			final UserPrincipal principal = (UserPrincipal) request.getUserPrincipal();
 			response.getWriter().println("principal=" + request.getUserPrincipal().getClass().getSimpleName());
 			response.getWriter().println("username=" + sampleEJB.getPrincipalName());
 

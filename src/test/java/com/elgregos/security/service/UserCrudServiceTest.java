@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.elgregos.security.data.crud.UserCrudService;
-import com.elgregos.security.data.entities.Group;
+import com.elgregos.security.data.entities.Role;
 import com.elgregos.security.data.entities.User;
 import com.elgregos.test.arquillian.EarDeployment;
 
@@ -30,12 +30,12 @@ public class UserCrudServiceTest {
 	public static Archive<?> createDeploymentPackage() {
 		return new EarDeployment("user.ear") {
 			{
-				webArchive.addAsWebInfResource("test-ds.xml");
-				ejbModule.addClasses(UserManagementService.class, UserCrudService.class, PasswordEncryptionService.class).addAsManifestResource(
+				this.webArchive.addAsWebInfResource("test-ds.xml");
+				this.ejbModule.addClasses(UserManagementService.class, UserCrudService.class, PasswordEncryptionService.class).addAsManifestResource(
 						EmptyAsset.INSTANCE, "beans.xml");
-				earLibraries.add(ShrinkWrap.create(JavaArchive.class, "user.jar").addPackage(User.class.getPackage())
+				this.earLibraries.add(ShrinkWrap.create(JavaArchive.class, "user.jar").addPackage(User.class.getPackage())
 						.addAsManifestResource("test-persistence.xml", "persistence.xml"));
-				earLibraries.add(ShrinkWrap.createFromZipFile(JavaArchive.class, getJarFile(UserCrudService.class)));
+				this.earLibraries.add(ShrinkWrap.createFromZipFile(JavaArchive.class, getJarFile(UserCrudService.class)));
 			}
 		}.create();
 	}
@@ -66,8 +66,8 @@ public class UserCrudServiceTest {
 		user.setLastname("Duhem");
 		user.setPassword("MyPassword");
 		user.setRegisteredOn(new Date());
-		user.addGroup(Group.ADMINISTRATOR);
-		userManagementService.createUser(user);
+		user.addRole(Role.ADMINISTRATOR);
+		this.userManagementService.createUser(user);
 		Assert.assertNotNull(user.getSalt());
 		Assert.assertEquals(128, user.getPassword().length());
 	}

@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.elgregos.security.data.entities.Group;
+import com.elgregos.security.data.entities.Role;
 import com.elgregos.security.data.entities.User;
 import com.elgregos.test.arquillian.EarDeployment;
 
@@ -20,7 +20,7 @@ public class PasswordEncryptionServiceTest {
 	public static Archive<?> createDeploymentPackage() {
 		return new EarDeployment("security.ear") {
 			{
-				ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, User.class, Group.class);
+				this.ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, User.class, Role.class);
 			}
 		}.create();
 	}
@@ -30,7 +30,7 @@ public class PasswordEncryptionServiceTest {
 
 	@Test
 	public void testPasswordEncryptionServiceInjection() {
-		Assert.assertNotNull(passwordEncryptionService);
+		Assert.assertNotNull(this.passwordEncryptionService);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class PasswordEncryptionServiceTest {
 		final User user = new User();
 		user.setPassword("MyPassword");
 		try {
-			passwordEncryptionService.setEncryptedPassword(user);
+			this.passwordEncryptionService.setEncryptedPassword(user);
 			final String password = user.getPassword();
 			Assert.assertNotNull(password);
 			Assert.assertEquals(128, password.length());

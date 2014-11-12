@@ -1,5 +1,8 @@
 package com.elgregos.security.data.entities;
 
-public class Role {
-
+public enum Role {
+	/** Utilisateur identifiés */
+	USER,
+	/** Administrateur */
+	ADMINISTRATOR
 }
