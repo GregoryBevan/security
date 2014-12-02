@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import com.elgregos.security.data.crud.UserCrudService;
 import com.elgregos.security.data.entities.Role;
-import com.elgregos.security.data.entities.User;
+import com.elgregos.security.data.entities.UserProfile;
 
 @Singleton
 public class LoginVerifier {
@@ -17,7 +17,7 @@ public class LoginVerifier {
 	private PasswordEncryptionService passwordEncryptionService;
 
 	public boolean checkLogin(final String email, final String password) {
-		final User user = this.userCrudService.find(email);
+		final UserProfile user = this.userCrudService.find(email);
 		if (user == null) {
 			return false;
 		}

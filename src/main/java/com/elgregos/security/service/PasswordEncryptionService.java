@@ -12,25 +12,25 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.ejb.Singleton;
 
-import com.elgregos.security.data.entities.User;
+import com.elgregos.security.data.entities.UserProfile;
 
 /**
  * Description : Service de cryptage du mot de passe
  *
- * @author Grégo
+ * @author Grï¿½go
  * @date 10 mai 2013
  */
 @Singleton
 public class PasswordEncryptionService {
 
 	/**
-	 * Définit le mot de passe encrypté de l'utilisateur
+	 * Dï¿½finit le mot de passe encryptï¿½ de l'utilisateur
 	 *
 	 * @param user Utilisateur
-	 * @param inputPassword Mot de passe entré
+	 * @param inputPassword Mot de passe entrï¿½
 	 * @throws SecurityException
 	 */
-	public void setEncryptedPassword(final User user) throws SecurityException {
+	public void setEncryptedPassword(final UserProfile user) throws SecurityException {
 		final byte[] salt = generateSalt();
 		final byte[] encryptedPassword = getEncryptedPassword(user.getPassword(), salt);
 		user.setPassword(byteToBase64(encryptedPassword));
@@ -38,11 +38,11 @@ public class PasswordEncryptionService {
 	}
 
 	/**
-	 * Retourne le mot de passe crypté
+	 * Retourne le mot de passe cryptï¿½
 	 *
 	 * @param password Mot de passe
-	 * @param salt Donnée aléatoire
-	 * @return Mot de passe crypté
+	 * @param salt Donnï¿½e alï¿½atoire
+	 * @return Mot de passe cryptï¿½
 	 */
 	public String getEncryptedPassword(final String password, final String salt) {
 		final byte[] saltAsByte = base64ToByte(salt);
@@ -50,11 +50,11 @@ public class PasswordEncryptionService {
 	}
 
 	/**
-	 * Retourne le tableau d'octet du mot de passe crypté
+	 * Retourne le tableau d'octet du mot de passe cryptï¿½
 	 *
 	 * @param password Mot de passe
-	 * @param salt Donnée aléatoire
-	 * @return Hachage du mot de passe entré
+	 * @param salt Donnï¿½e alï¿½atoire
+	 * @return Hachage du mot de passe entrï¿½
 	 * @throws SecurityException
 	 */
 	private byte[] getEncryptedPassword(final String password, final byte[] salt) throws SecurityException {
@@ -69,7 +69,7 @@ public class PasswordEncryptionService {
 	}
 
 	/**
-	 * Génère une donnée aléatoire pour sécuriser l'encryption
+	 * Gï¿½nï¿½re une donnï¿½e alï¿½atoire pour sï¿½curiser l'encryption
 	 *
 	 * @return Salt
 	 * @throws SecurityException
@@ -87,9 +87,9 @@ public class PasswordEncryptionService {
 	}
 
 	/**
-	 * Retourne un tableau d'octet à partir d'une représentation base 64
+	 * Retourne un tableau d'octet ï¿½ partir d'une reprï¿½sentation base 64
 	 *
-	 * @param base64String Représentation base 64
+	 * @param base64String Reprï¿½sentation base 64
 	 * @return byte[]
 	 */
 	private byte[] base64ToByte(final String base64String) {
@@ -98,10 +98,10 @@ public class PasswordEncryptionService {
 	}
 
 	/**
-	 * Retourne une représentation base 64 d'un tableau d'octets
+	 * Retourne une reprï¿½sentation base 64 d'un tableau d'octets
 	 *
-	 * @param byteArray Tableau d'octet à encoder en base 64
-	 * @return Représentation base 64
+	 * @param byteArray Tableau d'octet ï¿½ encoder en base 64
+	 * @return Reprï¿½sentation base 64
 	 */
 	private String byteToBase64(final byte[] byteArray) {
 		final Encoder endecoder = Base64.getEncoder();

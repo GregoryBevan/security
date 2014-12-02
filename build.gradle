@@ -2,10 +2,14 @@ apply plugin: 'eclipse'
 apply plugin: 'java'
 apply plugin: 'artifactory'
 apply plugin: 'project-report'
+apply plugin: 'maven'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }
+
+group='com.elgregos'
+version='1.0.0'
 
 buildscript {
 	repositories {
@@ -30,6 +34,7 @@ buildscript {
 	}
 }
 
+
 artifactory {
 	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
 	publish {
@@ -37,7 +42,7 @@ artifactory {
 			repoKey = 'elgregos-release-local'
 			username = "${artifactory_user}"
 			password = "${artifactory_password}"
-			maven = false
+			maven = true
 			ivy {
 				ivyLayout = '[organization]/[module]/ivy-[revision].xml'
 				artifactLayout = '[organization]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]'
@@ -78,4 +83,8 @@ dependencies {
 
 test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+
+artifactoryPublish {
+    publishConfigs ('archives')
 }

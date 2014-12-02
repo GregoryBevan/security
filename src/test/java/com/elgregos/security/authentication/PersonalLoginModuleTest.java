@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.elgregos.security.data.crud.UserCrudService;
 import com.elgregos.security.data.entities.Role;
-import com.elgregos.security.data.entities.User;
+import com.elgregos.security.data.entities.UserProfile;
 import com.elgregos.security.service.LoginVerifier;
 import com.elgregos.security.service.PasswordEncryptionService;
 import com.elgregos.test.arquillian.EarDeployment;
@@ -67,7 +67,7 @@ public class PersonalLoginModuleTest {
 						.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml").addAsManifestResource("jboss-ejb3.xml");
 				this.earLibraries.add(ShrinkWrap.create(JavaArchive.class)
 						.addClasses(UserPrincipal.class, PersonalGroup.class, PersonalLoginModule.class, Role.class)
-						.addPackage(User.class.getPackage()).addAsManifestResource("test-persistence.xml", "persistence.xml")
+						.addPackage(UserProfile.class.getPackage()).addAsManifestResource("test-persistence.xml", "persistence.xml")
 						.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml"));
 				addGradleDependency("org.apache.httpcomponents:httpclient:4.3.4", true);
 				addGradleDependency("com.elgregos:jpa-core:1.0.0", false);

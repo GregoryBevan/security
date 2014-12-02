@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.elgregos.security.data.entities.Role;
-import com.elgregos.security.data.entities.User;
+import com.elgregos.security.data.entities.UserProfile;
 import com.elgregos.test.arquillian.EarDeployment;
 
 @RunWith(Arquillian.class)
@@ -20,7 +20,7 @@ public class PasswordEncryptionServiceTest {
 	public static Archive<?> createDeploymentPackage() {
 		return new EarDeployment("security.ear") {
 			{
-				this.ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, User.class, Role.class);
+				this.ejbModule.addClasses(PasswordEncryptionService.class, SecurityException.class, UserProfile.class, Role.class);
 			}
 		}.create();
 	}
@@ -35,7 +35,7 @@ public class PasswordEncryptionServiceTest {
 
 	@Test
 	public void testSetEncryptedPassword() {
-		final User user = new User();
+		final UserProfile user = new UserProfile();
 		user.setPassword("MyPassword");
 		try {
 			this.passwordEncryptionService.setEncryptedPassword(user);

@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.elgregos.security.data.crud.UserCrudService;
 import com.elgregos.security.data.entities.Role;
-import com.elgregos.security.data.entities.User;
+import com.elgregos.security.data.entities.UserProfile;
 import com.elgregos.test.arquillian.EarDeployment;
 
 @RunWith(Arquillian.class)
@@ -33,7 +33,7 @@ public class UserCrudServiceTest {
 				this.webArchive.addAsWebInfResource("test-ds.xml");
 				this.ejbModule.addClasses(UserManagementService.class, UserCrudService.class, PasswordEncryptionService.class).addAsManifestResource(
 						EmptyAsset.INSTANCE, "beans.xml");
-				this.earLibraries.add(ShrinkWrap.create(JavaArchive.class, "user.jar").addPackage(User.class.getPackage())
+				this.earLibraries.add(ShrinkWrap.create(JavaArchive.class, "user.jar").addPackage(UserProfile.class.getPackage())
 						.addAsManifestResource("test-persistence.xml", "persistence.xml"));
 				this.earLibraries.add(ShrinkWrap.createFromZipFile(JavaArchive.class, getJarFile(UserCrudService.class)));
 			}
@@ -60,7 +60,7 @@ public class UserCrudServiceTest {
 
 	@Test
 	public void createUserTest() {
-		final User user = new User();
+		final UserProfile user = new UserProfile();
 		user.setEmail("fanny.duhem@gmail.com");
 		user.setFirstname("Fanny");
 		user.setLastname("Duhem");

@@ -32,11 +32,11 @@ import lombok.ToString;
  * @date 2 mai 2013
  */
 @Entity
-@Table(name = "USER")
+@Table(name = "USER_PROFILE")
 @Cacheable(false)
 @EqualsAndHashCode(exclude = { "password", "salt" })
 @ToString(exclude = { "password", "salt" })
-public class User implements Serializable {
+public class UserProfile implements Serializable {
 
 	private static final long serialVersionUID = 2523960131359741511L;
 
@@ -72,12 +72,6 @@ public class User implements Serializable {
 	@Setter
 	private Date registeredOn;
 
-	// @OneToMany(targetEntity = Group.class, mappedBy = "id", fetch =
-	// FetchType.EAGER)
-	// @Getter
-	// @Setter(AccessLevel.NONE)
-	// private final List<Group> groups;
-
 	@ElementCollection(targetClass = Role.class)
 	@CollectionTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "email", nullable = false), uniqueConstraints = @UniqueConstraint(columnNames = {
 			"email", "role" }))
@@ -87,14 +81,9 @@ public class User implements Serializable {
 	@Setter(AccessLevel.NONE)
 	private final List<Role> roles;
 
-	public User() {
-		// this.groups = new ArrayList<>();
+	public UserProfile() {
 		this.roles = new ArrayList<>();
 	}
-
-	// public void addGroup(final Group group) {
-	// // this.groups.add(group);
-	// }
 
 	public void addRole(final Role role) {
 		this.roles.add(role);
